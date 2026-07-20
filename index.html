@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inventory Management System — C++17 Console Application</title>
+<meta name="description" content="A professional C++17 console-based Inventory Management System built with STL maps, vectors, sorting algorithms, binary search, and CSV persistence.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="grain"></div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#top" class="nav-brand">
+      <span class="nav-brand-tag">SKU-001</span>
+      <span class="nav-brand-name">Inventory&nbsp;Management&nbsp;System</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav-links" id="navLinks">
+      <a href="#overview">Overview</a>
+      <a href="#features">Features</a>
+      <a href="#stack">Stack</a>
+      <a href="#screenshots">Screenshots</a>
+      <a href="#demo">Demo</a>
+      <a href="#contact">Contact</a>
+      <a href="#get" class="nav-cta">Get the code</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow">C++17 · CONSOLE APPLICATION</p>
+        <h1>Every product,<br>tracked, sorted,<br>and <span class="accent-underline">accounted&nbsp;for.</span></h1>
+        <p class="hero-lede">
+          A production-quality Inventory Management System written in modern C++.
+          Built on <code>std::map</code> and <code>std::vector</code>, it adds, sells,
+          restocks, sorts, and reports on inventory — then saves every change straight
+          back to a CSV ledger.
+        </p>
+        <div class="hero-actions">
+          <a href="#get" class="btn btn-primary">
+            <svg viewBox="0 0 16 16" class="btn-icon" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+            View on GitHub
+          </a>
+          <a href="#get" class="btn btn-ghost">
+            <svg viewBox="0 0 16 16" class="btn-icon" fill="currentColor" aria-hidden="true"><path d="M8 11.5 3.5 7l1.06-1.06L7.25 8.63V0h1.5v8.63l2.69-2.69L12.5 7 8 11.5ZM2 13h12v1.5H2V13Z"/></svg>
+            Download source
+          </a>
+        </div>
+        <ul class="hero-meta">
+          <li><span class="dot dot-green"></span>Menu-driven, 15 operations</li>
+          <li><span class="dot dot-amber"></span>Zero dependencies</li>
+          <li><span class="dot dot-slate"></span>MIT licensed</li>
+        </ul>
+      </div>
+
+      <div class="hero-terminal" aria-hidden="true">
+        <div class="terminal">
+          <div class="terminal-titlebar">
+            <span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span>
+            <span class="terminal-title">bash — ./inventory</span>
+          </div>
+          <pre class="terminal-body" id="terminalBody"></pre>
+        </div>
+        <div class="terminal-tag">
+          <span class="terminal-tag-id">#101</span>
+          <span class="terminal-tag-label">Laptop</span>
+          <span class="terminal-tag-qty">QTY 15</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ OVERVIEW ============ -->
+  <section class="section" id="overview">
+    <div class="section-inner">
+      <p class="section-eyebrow">01 — Overview</p>
+      <h2 class="section-title">A ledger that never loses a row.</h2>
+      <div class="overview-grid">
+        <p class="overview-lead">
+          Inventory Management System is a console application built for a
+          single job: keep an accurate, queryable record of stock — from the
+          moment a product is added to the moment it's sold out. Every product
+          lives twice in memory: once in an <code>std::map&lt;int, Product&gt;</code>
+          for instant lookups by ID, and once as a sortable <code>std::vector</code>
+          whenever you need it ordered by name, price, or quantity.
+        </p>
+        <div class="overview-facts">
+          <div class="fact">
+            <span class="fact-num">O(log n)</span>
+            <span class="fact-label">map insert · search · delete</span>
+          </div>
+          <div class="fact">
+            <span class="fact-num">O(n log n)</span>
+            <span class="fact-label">std::sort by name, price, quantity</span>
+          </div>
+          <div class="fact">
+            <span class="fact-num">O(log n)</span>
+            <span class="fact-label">manual binary search by ID</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FEATURES ============ -->
+  <section class="section section-alt" id="features">
+    <div class="section-inner">
+      <p class="section-eyebrow">02 — Features</p>
+      <h2 class="section-title">Fifteen operations. One clean menu.</h2>
+
+      <div class="feature-grid">
+
+        <article class="feature-card">
+          <span class="feature-tag">SKU-01</span>
+          <h3>Full CRUD</h3>
+          <p>Add, display, update, and delete products, with duplicate-ID and negative-value validation baked in.</p>
+        </article>
+
+        <article class="feature-card">
+          <span class="feature-tag">SKU-02</span>
+          <h3>Sell &amp; restock</h3>
+          <p>Move stock in and out. Selling more than you have on hand is rejected — the ledger never goes negative.</p>
+        </article>
+
+        <article class="feature-card">
+          <span class="feature-tag">SKU-03</span>
+          <h3>Search, three ways</h3>
+          <p>O(log n) map lookup by ID, plus linear search by name or category for looser queries.</p>
+        </article>
+
+        <article class="feature-card">
+          <span class="feature-tag">SKU-04</span>
+          <h3>Sort on demand</h3>
+          <p><code>std::sort</code> the current inventory by name, price, or quantity without touching the underlying store.</p>
+        </article>
+
+        <article class="feature-card">
+          <span class="feature-tag">SKU-05</span>
+          <h3>Binary search</h3>
+          <p>A hand-written binary search over a sorted vector — a working reference implementation, not just <code>map::find</code>.</p>
+        </article>
+
+        <article class="feature-card">
+          <span class="feature-tag">SKU-06</span>
+          <h3>Low-stock alerts</h3>
+          <p>Flags every product under the restock threshold, so nothing runs out unnoticed.</p>
+        </article>
+
+        <article class="feature-card">
+          <span class="feature-tag">SKU-07</span>
+          <h3>Inventory reports</h3>
+          <p>Total units, total value, priciest and cheapest items, highest and lowest stock — exportable to <code>report.txt</code>.</p>
+        </article>
+
+        <article class="feature-card">
+          <span class="feature-tag">SKU-08</span>
+          <h3>CSV persistence</h3>
+          <p>Loads <code>inventory.csv</code> on launch, writes it on exit, and creates the file automatically if it's missing.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TECHNOLOGIES ============ -->
+  <section class="section" id="stack">
+    <div class="section-inner">
+      <p class="section-eyebrow">03 — Technologies</p>
+      <h2 class="section-title">Built on the standard library. Nothing else.</h2>
+      <p class="stack-intro">No frameworks, no external packages — just modern, portable C++17 and the tools that ship with any compiler.</p>
+
+      <div class="stack-grid">
+        <div class="stack-item">
+          <span class="stack-name">C++17</span>
+          <span class="stack-desc">Core language</span>
+        </div>
+        <div class="stack-item">
+          <span class="stack-name">std::map</span>
+          <span class="stack-desc">Primary inventory store</span>
+        </div>
+        <div class="stack-item">
+          <span class="stack-name">std::vector</span>
+          <span class="stack-desc">Sorting &amp; search results</span>
+        </div>
+        <div class="stack-item">
+          <span class="stack-name">std::sort</span>
+          <span class="stack-desc">Sorting algorithm</span>
+        </div>
+        <div class="stack-item">
+          <span class="stack-name">fstream</span>
+          <span class="stack-desc">CSV read / write</span>
+        </div>
+        <div class="stack-item">
+          <span class="stack-name">iomanip</span>
+          <span class="stack-desc">Table formatting</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+ 
+
+
+
+  <!-- ============ GET THE CODE ============ -->
+  <section class="section section-alt" id="get">
+    <div class="section-inner get-inner">
+      <p class="section-eyebrow">04  — Get the code</p>
+      <h2 class="section-title">Clone it, compile it, run it.</h2>
+      <pre class="code-block"><code>git clone https://github.com/your-username/inventory-management-system.git
+cd inventory-management-system
+g++ -std=c++17 -Wall -Wextra -o inventory main.cpp
+./inventory</code></pre>
+      <div class="hero-actions get-actions">
+        <a href="https://github.com/jaswanth-m-ai/Inventory-managment-system" class="btn btn-primary" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" class="btn-icon" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+          View repository
+        </a>
+       
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section class="section" id="contact">
+    <div class="section-inner">
+      <p class="section-eyebrow">05 — Contact</p>
+      <h2 class="section-title">Questions, issues, or pull requests welcome.</h2>
+      <div class="contact-grid">
+        <a class="contact-card" href="mailto:you@example.com">
+          <span class="contact-label">Email</span>
+          <span class="contact-value">jaswanth.m.ai@gmail.com</span>
+        </a>
+        <a class="contact-card" href="https://github.com/your-username" target="_blank" rel="noopener">
+          <span class="contact-label">GitHub</span>
+          <span class="contact-value">@jaswanth-m-ai</span>
+        </a>
+        
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="nav-brand-tag">SKU-001</span>
+      <span>Inventory Management System</span>
+    </div>
+    <p class="footer-note">Built with C++17 · MIT Licensed · Deployed with GitHub Pages</p>
+    <p class="footer-copy">&copy; <span id="year"></span> Inventory Management System. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
