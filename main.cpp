@@ -1,14 +1,3 @@
-/*
- * ============================================================================
- *  Project      : Inventory Management System
- *  Language     : C++17
- *  Description  : A console-based Inventory Management System demonstrating
- *                 Object Oriented Programming, STL containers (map, vector),
- *                 sorting algorithms, binary search, and CSV file handling.
- *  Author       : Inventory Management System Team
- * ============================================================================
- */
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -20,17 +9,10 @@
 #include <limits>
 #include <cstdlib>
 
-// ----------------------------------------------------------------------------
-// Constants
-// ----------------------------------------------------------------------------
 const std::string INVENTORY_FILE = "inventory.csv";
 const std::string REPORT_FILE = "report.txt";
 const int LOW_STOCK_THRESHOLD = 10;
 
-// ============================================================================
-// Class: Product
-// Represents a single inventory item.
-// ============================================================================
 class Product {
 private:
     int id;
@@ -40,47 +22,37 @@ private:
     int quantity;
 
 public:
-    // Default constructor
+
     Product() : id(0), name(""), category(""), price(0.0), quantity(0) {}
 
-    // Parameterized constructor
     Product(int productId, const std::string &productName,
             const std::string &productCategory, double productPrice,
             int productQuantity)
         : id(productId), name(productName), category(productCategory),
           price(productPrice), quantity(productQuantity) {}
 
-    // ------------------------------------------------------------------
-    // Getters
-    // ------------------------------------------------------------------
     int getId() const { return id; }
     std::string getName() const { return name; }
     std::string getCategory() const { return category; }
     double getPrice() const { return price; }
     int getQuantity() const { return quantity; }
 
-    // ------------------------------------------------------------------
-    // Setters
-    // ------------------------------------------------------------------
     void setName(const std::string &newName) { name = newName; }
     void setCategory(const std::string &newCategory) { category = newCategory; }
     void setPrice(double newPrice) { price = newPrice; }
     void setQuantity(int newQuantity) { quantity = newQuantity; }
 
-    // Increase / decrease stock
     void increaseQuantity(int amount) { quantity += amount; }
     bool decreaseQuantity(int amount) {
         if (amount > quantity) {
-            return false; // Not enough stock
+            return false;
         }
         quantity -= amount;
         return true;
     }
 
-    // Total value of this product in stock
     double getTotalValue() const { return price * quantity; }
 
-    // Convert product record to a single CSV line
     std::string toCSV() const {
         std::ostringstream oss;
         oss << id << "," << name << "," << category << ","
@@ -89,28 +61,18 @@ public:
     }
 };
 
-// ============================================================================
-// Class: InventoryManager
-// Manages the full collection of products, including CRUD operations,
-// sorting, searching, reporting, and CSV persistence.
-// ============================================================================
 class InventoryManager {
 private:
-    // Primary storage: Product ID -> Product
-    // Map operations: Insert O(log n), Search O(log n), Delete O(log n)
+
     std::map<int, Product> inventory;
 
 public:
-    // ------------------------------------------------------------------
-    // File Handling
-    // ------------------------------------------------------------------
 
-    // Load inventory from CSV file. If the file does not exist, create it.
     void loadFromFile(const std::string &filename) {
         std::ifstream file(filename);
 
         if (!file.is_open()) {
-            // File does not exist, create an empty one.
+
             std::ofstream newFile(filename);
             newFile.close();
             std::cout << "[INFO] No existing inventory found. Created new file: "
@@ -133,7 +95,6 @@ public:
             std::getline(ss, priceStr, ',');
             std::getline(ss, quantityStr, ',');
 
-            // Skip malformed lines
             if (idStr.empty() || priceStr.empty() || quantityStr.empty()) continue;
 
             try {
@@ -142,10 +103,10 @@ public:
                 int quantity = std::stoi(quantityStr);
 
                 Product p(id, name, category, price, quantity);
-                inventory[id] = p; // Map Insert: O(log n)
+                inventory[id] = p;
                 loadedCount++;
             } catch (const std::exception &e) {
-                // Skip lines that fail to parse
+
                 continue;
             }
         }
@@ -155,7 +116,6 @@ public:
                   << filename << "\n";
     }
 
-    // Save inventory to CSV file (overwrites existing content).
     void saveToFile(const std::string &filename) const {
         std::ofstream file(filename);
 
@@ -172,14 +132,9 @@ public:
         std::cout << "[INFO] Inventory saved successfully to " << filename << "\n";
     }
 
-    // ------------------------------------------------------------------
-    // CRUD Operations
-    // ------------------------------------------------------------------
-
-    // Add a new product. Time Complexity: O(log n) for map insert.
     bool addProduct(int id, const std::string &name, const std::string &category,
                      double price, int quantity) {
-        // Validation: Duplicate ID check -> Map Search: O(log n)
+
         if (inventory.find(id) != inventory.end()) {
             std::cout << "[ERROR] Product ID " << id << " already exists.\n";
             return false;
@@ -194,12 +149,11 @@ public:
         }
 
         Product newProduct(id, name, category, price, quantity);
-        inventory[id] = newProduct; // Map Insert: O(log n)
+        inventory[id] = newProduct;
         std::cout << "[SUCCESS] Product added successfully.\n";
         return true;
     }
 
-    // Display all products in a professional tabular format.
     void displayAllProducts() const {
         if (inventory.empty()) {
             std::cout << "[INFO] Inventory is empty.\n";
@@ -213,16 +167,14 @@ public:
         printTableFooter();
     }
 
-    // Search for a product by ID using STL map. Time Complexity: O(log n)
     Product* searchById(int id) {
-        auto it = inventory.find(id); // Map Search: O(log n)
+        auto it = inventory.find(id);
         if (it != inventory.end()) {
             return &(it->second);
         }
         return nullptr;
     }
 
-    // Search for products by name (linear scan, partial/case-sensitive match)
     std::vector<Product> searchByName(const std::string &name) const {
         std::vector<Product> results;
         for (const auto &pair : inventory) {
@@ -233,7 +185,6 @@ public:
         return results;
     }
 
-    // Search for products by category (linear scan)
     std::vector<Product> searchByCategory(const std::string &category) const {
         std::vector<Product> results;
         for (const auto &pair : inventory) {
@@ -244,10 +195,9 @@ public:
         return results;
     }
 
-    // Update an existing product's details. Time Complexity: O(log n)
     bool updateProduct(int id, const std::string &name, const std::string &category,
                         double price, int quantity) {
-        auto it = inventory.find(id); // Map Search: O(log n)
+        auto it = inventory.find(id);
         if (it == inventory.end()) {
             std::cout << "[ERROR] Product with ID " << id << " not found.\n";
             return false;
@@ -270,25 +220,19 @@ public:
         return true;
     }
 
-    // Delete a product by ID. Time Complexity: O(log n) for map erase.
     bool deleteProduct(int id) {
-        auto it = inventory.find(id); // Map Search: O(log n)
+        auto it = inventory.find(id);
         if (it == inventory.end()) {
             std::cout << "[ERROR] Product with ID " << id << " not found.\n";
             return false;
         }
-        inventory.erase(it); // Map Delete: O(log n)
+        inventory.erase(it);
         std::cout << "[SUCCESS] Product deleted successfully.\n";
         return true;
     }
 
-    // ------------------------------------------------------------------
-    // Stock Operations
-    // ------------------------------------------------------------------
-
-    // Sell a product: decreases quantity, never allows negative stock.
     bool sellProduct(int id, int amount) {
-        auto it = inventory.find(id); // Map Search: O(log n)
+        auto it = inventory.find(id);
         if (it == inventory.end()) {
             std::cout << "[ERROR] Product with ID " << id << " not found.\n";
             return false;
@@ -307,9 +251,8 @@ public:
         return true;
     }
 
-    // Restock a product: increases quantity.
     bool restockProduct(int id, int amount) {
-        auto it = inventory.find(id); // Map Search: O(log n)
+        auto it = inventory.find(id);
         if (it == inventory.end()) {
             std::cout << "[ERROR] Product with ID " << id << " not found.\n";
             return false;
@@ -324,11 +267,6 @@ public:
         return true;
     }
 
-    // ------------------------------------------------------------------
-    // Sorting (uses std::vector + std::sort)
-    // Time Complexity: O(n log n)
-    // ------------------------------------------------------------------
-
     std::vector<Product> getProductVector() const {
         std::vector<Product> products;
         products.reserve(inventory.size());
@@ -340,7 +278,7 @@ public:
 
     std::vector<Product> sortByName() const {
         std::vector<Product> products = getProductVector();
-        // Sorting Algorithm: std::sort -> O(n log n)
+
         std::sort(products.begin(), products.end(),
                   [](const Product &a, const Product &b) {
                       return a.getName() < b.getName();
@@ -350,7 +288,7 @@ public:
 
     std::vector<Product> sortByPrice() const {
         std::vector<Product> products = getProductVector();
-        // Sorting Algorithm: std::sort -> O(n log n)
+
         std::sort(products.begin(), products.end(),
                   [](const Product &a, const Product &b) {
                       return a.getPrice() < b.getPrice();
@@ -360,7 +298,7 @@ public:
 
     std::vector<Product> sortByQuantity() const {
         std::vector<Product> products = getProductVector();
-        // Sorting Algorithm: std::sort -> O(n log n)
+
         std::sort(products.begin(), products.end(),
                   [](const Product &a, const Product &b) {
                       return a.getQuantity() < b.getQuantity();
@@ -368,13 +306,8 @@ public:
         return products;
     }
 
-    // ------------------------------------------------------------------
-    // Binary Search (performed on a vector sorted by ID)
-    // Time Complexity: O(log n)
-    // ------------------------------------------------------------------
     Product* binarySearchById(int id) {
-        // Build a sorted-by-ID vector (map is already ordered by key,
-        // so a simple copy preserves ascending ID order).
+
         std::vector<Product> products = getProductVector();
 
         int left = 0;
@@ -384,7 +317,7 @@ public:
             int mid = left + (right - left) / 2;
 
             if (products[mid].getId() == id) {
-                // Return pointer to the actual stored product in the map
+
                 auto it = inventory.find(products[mid].getId());
                 if (it != inventory.end()) {
                     return &(it->second);
@@ -396,12 +329,9 @@ public:
                 right = mid - 1;
             }
         }
-        return nullptr; // Not found
+        return nullptr;
     }
 
-    // ------------------------------------------------------------------
-    // Low Stock Alert
-    // ------------------------------------------------------------------
     std::vector<Product> getLowStockProducts() const {
         std::vector<Product> lowStock;
         for (const auto &pair : inventory) {
@@ -412,9 +342,6 @@ public:
         return lowStock;
     }
 
-    // ------------------------------------------------------------------
-    // Inventory Report / Analytics
-    // ------------------------------------------------------------------
     void generateReport(bool exportToFile = false) const {
         if (inventory.empty()) {
             std::cout << "[INFO] Inventory is empty. No report to generate.\n";
@@ -443,9 +370,9 @@ public:
 
         std::ostringstream report;
         report << std::fixed << std::setprecision(2);
-        report << "\n============================================================\n";
+        report << "\n\n";
         report << "                    INVENTORY REPORT\n";
-        report << "============================================================\n";
+        report << "\n";
         report << std::left << std::setw(28) << "Total Products:" << totalProducts << "\n";
         report << std::left << std::setw(28) << "Total Stock Units:" << totalStockUnits << "\n";
         report << std::left << std::setw(28) << "Total Inventory Value:" << "$" << totalInventoryValue << "\n";
@@ -458,7 +385,7 @@ public:
                << " (ID: " << highestQuantity.getId() << ", Qty: " << highestQuantity.getQuantity() << ")\n";
         report << "Lowest Quantity Product : " << lowestQuantity.getName()
                << " (ID: " << lowestQuantity.getId() << ", Qty: " << lowestQuantity.getQuantity() << ")\n";
-        report << "============================================================\n";
+        report << "\n";
 
         std::cout << report.str();
 
@@ -474,9 +401,6 @@ public:
         }
     }
 
-    // ------------------------------------------------------------------
-    // Table Printing Helpers
-    // ------------------------------------------------------------------
     static void printTableHeader() {
         std::cout << "\n" << std::string(90, '-') << "\n";
         std::cout << std::left
@@ -516,15 +440,9 @@ public:
         printTableFooter();
     }
 
-    // Getter for the total number of products (used by main for validation)
     size_t size() const { return inventory.size(); }
 };
 
-// ============================================================================
-// Input Helper Functions
-// ============================================================================
-
-// Safely reads an integer from std::cin, re-prompting on invalid input.
 int readInt(const std::string &prompt) {
     int value;
     while (true) {
@@ -541,7 +459,6 @@ int readInt(const std::string &prompt) {
     }
 }
 
-// Safely reads a double from std::cin, re-prompting on invalid input.
 double readDouble(const std::string &prompt) {
     double value;
     while (true) {
@@ -558,7 +475,6 @@ double readDouble(const std::string &prompt) {
     }
 }
 
-// Reads a full line of text from std::cin.
 std::string readLine(const std::string &prompt) {
     std::string value;
     std::cout << prompt;
@@ -566,13 +482,10 @@ std::string readLine(const std::string &prompt) {
     return value;
 }
 
-// ============================================================================
-// Menu Display
-// ============================================================================
 void displayMenu() {
-    std::cout << "\n============================================================\n";
+    std::cout << "\n\n";
     std::cout << "            INVENTORY MANAGEMENT SYSTEM\n";
-    std::cout << "============================================================\n";
+    std::cout << "\n";
     std::cout << " 1.  Add Product\n";
     std::cout << " 2.  Display Products\n";
     std::cout << " 3.  Search Product\n";
@@ -588,10 +501,9 @@ void displayMenu() {
     std::cout << "13.  Inventory Report\n";
     std::cout << "14.  Save Inventory\n";
     std::cout << "15.  Exit\n";
-    std::cout << "============================================================\n";
+    std::cout << "\n";
 }
 
-// Sub-menu for the Search Product option (ID / Name / Category)
 void handleSearchMenu(InventoryManager &manager) {
     std::cout << "\n--- Search Product ---\n";
     std::cout << "1. Search by ID\n";
@@ -629,13 +541,9 @@ void handleSearchMenu(InventoryManager &manager) {
     }
 }
 
-// ============================================================================
-// Main Application Entry Point
-// ============================================================================
 int main() {
     InventoryManager manager;
 
-    // Load inventory automatically on startup.
     manager.loadFromFile(INVENTORY_FILE);
 
     bool running = true;
@@ -645,7 +553,7 @@ int main() {
         int choice = readInt("Enter your choice: ");
 
         switch (choice) {
-            case 1: { // Add Product
+            case 1: {
                 std::cout << "\n--- Add Product ---\n";
                 int id = readInt("Enter Product ID: ");
                 std::string name = readLine("Enter Product Name: ");
@@ -655,16 +563,16 @@ int main() {
                 manager.addProduct(id, name, category, price, quantity);
                 break;
             }
-            case 2: { // Display Products
+            case 2: {
                 std::cout << "\n--- All Products ---\n";
                 manager.displayAllProducts();
                 break;
             }
-            case 3: { // Search Product
+            case 3: {
                 handleSearchMenu(manager);
                 break;
             }
-            case 4: { // Update Product
+            case 4: {
                 std::cout << "\n--- Update Product ---\n";
                 int id = readInt("Enter Product ID to update: ");
                 if (manager.searchById(id) == nullptr) {
@@ -678,45 +586,45 @@ int main() {
                 manager.updateProduct(id, name, category, price, quantity);
                 break;
             }
-            case 5: { // Delete Product
+            case 5: {
                 std::cout << "\n--- Delete Product ---\n";
                 int id = readInt("Enter Product ID to delete: ");
                 manager.deleteProduct(id);
                 break;
             }
-            case 6: { // Sell Product
+            case 6: {
                 std::cout << "\n--- Sell Product ---\n";
                 int id = readInt("Enter Product ID: ");
                 int amount = readInt("Enter Quantity to Sell: ");
                 manager.sellProduct(id, amount);
                 break;
             }
-            case 7: { // Restock Product
+            case 7: {
                 std::cout << "\n--- Restock Product ---\n";
                 int id = readInt("Enter Product ID: ");
                 int amount = readInt("Enter Quantity to Restock: ");
                 manager.restockProduct(id, amount);
                 break;
             }
-            case 8: { // Sort by Name
+            case 8: {
                 std::cout << "\n--- Products Sorted by Name ---\n";
                 std::vector<Product> sorted = manager.sortByName();
                 InventoryManager::printProductVector(sorted);
                 break;
             }
-            case 9: { // Sort by Price
+            case 9: {
                 std::cout << "\n--- Products Sorted by Price ---\n";
                 std::vector<Product> sorted = manager.sortByPrice();
                 InventoryManager::printProductVector(sorted);
                 break;
             }
-            case 10: { // Sort by Quantity
+            case 10: {
                 std::cout << "\n--- Products Sorted by Quantity ---\n";
                 std::vector<Product> sorted = manager.sortByQuantity();
                 InventoryManager::printProductVector(sorted);
                 break;
             }
-            case 11: { // Binary Search by ID
+            case 11: {
                 std::cout << "\n--- Binary Search by ID ---\n";
                 int id = readInt("Enter Product ID: ");
                 Product *p = manager.binarySearchById(id);
@@ -729,13 +637,13 @@ int main() {
                 }
                 break;
             }
-            case 12: { // Low Stock Alert
+            case 12: {
                 std::cout << "\n--- Low Stock Alert (Quantity < " << LOW_STOCK_THRESHOLD << ") ---\n";
                 std::vector<Product> lowStock = manager.getLowStockProducts();
                 InventoryManager::printProductVector(lowStock);
                 break;
             }
-            case 13: { // Inventory Report
+            case 13: {
                 std::cout << "\n--- Inventory Report ---\n";
                 std::string exportChoice = readLine("Export report to report.txt? (y/n): ");
                 bool exportToFile = (!exportChoice.empty() &&
@@ -743,11 +651,11 @@ int main() {
                 manager.generateReport(exportToFile);
                 break;
             }
-            case 14: { // Save Inventory
+            case 14: {
                 manager.saveToFile(INVENTORY_FILE);
                 break;
             }
-            case 15: { // Exit
+            case 15: {
                 std::cout << "\n[INFO] Saving inventory before exit...\n";
                 manager.saveToFile(INVENTORY_FILE);
                 std::cout << "Thank you for using the Inventory Management System.\n";
